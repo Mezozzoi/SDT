@@ -1,9 +1,16 @@
-import {expect, test} from "@jest/globals";
+import {beforeAll, beforeEach, expect, test} from "@jest/globals";
 import TenderModel from "../src/models/tender.model";
 import UserModel, {UserType} from "../src/models/user.model";
-import sequelize from "../src/sequelize";
+import sequelize from "../src/common/sequelize";
 import TenderUserModel from "../src/models/tender-user.model";
-sequelize;
+
+beforeAll(async () => {
+    await sequelize.sync({force: true});
+})
+
+beforeEach(async () => {
+    await sequelize.truncate();
+})
 
 test("find all participants", async () => {
     const client = await UserModel.create({

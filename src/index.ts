@@ -1,8 +1,8 @@
 import express from "express";
 import router from "./routers";
 import bodyParser from "body-parser";
-import sequelize from "./sequelize";
-import errorHandler from "./errorHandler";
+import sequelize from "./common/sequelize";
+import errorHandler from "./common/errorHandler";
 
 sequelize.sync({force: true});
 

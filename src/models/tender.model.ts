@@ -9,13 +9,20 @@ import {
     Table
 } from "sequelize-typescript";
 import UserModel from "./user.model";
-import TenderUserModel from "./tender-user.model";
+import ProposalModel from "./proposal.model";
 
 interface CreateTender {
     title: string;
     ownerId: number;
     budget: number;
-    participants?: UserModel[];
+    scheduledOn?: Date;
+    tenderStatus?: TenderStatus;
+}
+
+export enum TenderStatus {
+    SCHEDULED = "scheduled",
+    OPEN = "open",
+    CLOSED = "closed"
 }
 
 @Table({
@@ -39,18 +46,17 @@ class TenderModel extends Model<TenderModel, CreateTender> {
     @BelongsTo(() => UserModel)
     owner: UserModel;
 
-    @BelongsToMany(() => UserModel, () => TenderUserModel)
+    @BelongsToMany(() => UserModel, () => ProposalModel)
     participants: UserModel[];
 
-    @BeforeCreate
-    static async beforeCreateHook(tender: TenderModel) {
-        for (let participant of tender.participants || []) {
-            await TenderUserModel.create({
-                tenderId: tender.id,
-                participantId: participant.id
-            })
-        }
-    }
+    @Column({type: DataType.DATE, allowNull: true, defaultValue: DataType.NOW})
+    scheduledOn: Date;
+
+    @Column({
+        type: DataType.ENUM({values: Object.values(TenderStatus)}),
+        allowNull: false, defaultValue: TenderStatus.OPEN
+    })
+    tenderStatus: TenderStatus;
 }
 
 export default TenderModel;

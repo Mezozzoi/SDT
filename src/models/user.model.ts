@@ -1,6 +1,6 @@
 import {BelongsToMany, Column, DataType, HasMany, Model, Table} from "sequelize-typescript";
 import TenderModel from "./tender.model";
-import TenderParticipantModel from "./tender-user.model";
+import ProposalModel from "./proposal.model";
 
 export enum UserType {
     ADMIN = "admin",
@@ -30,7 +30,7 @@ class UserModel extends Model<UserModel, UserModelCreate> {
     @HasMany(() => TenderModel, "ownerId")
     tenders: TenderModel;
 
-    @BelongsToMany(() => TenderModel, () => TenderParticipantModel)
+    @BelongsToMany(() => TenderModel, () => ProposalModel)
     participated: TenderModel[];
 }
 
